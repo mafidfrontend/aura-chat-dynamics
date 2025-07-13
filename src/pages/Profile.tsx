@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/layout/Navbar";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 
 const Profile: React.FC = () => {
   const { user, updateProfile, updatePhoto } = useAuth();
@@ -34,7 +35,6 @@ const Profile: React.FC = () => {
     name: user?.fullName || "",
     email: user?.email || "",
   });
-
 
   const handleSave = () => {
     if (!editData.name.trim() || !editData.email.trim()) {
@@ -99,7 +99,6 @@ const Profile: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
-          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gradient mb-2">Profile</h1>
             <p className="text-muted-foreground">
@@ -117,7 +116,13 @@ const Profile: React.FC = () => {
                 <CardContent className="pt-6">
                   <div className="text-center">
                     <div className="relative inline-block">
-                      <input 
+                      <Avatar className="h-24 w-24 mx-auto mb-4">
+                        <AvatarImage
+                          src={user.profilePic}
+                          alt={user.fullName}
+                        />
+                      </Avatar>
+                      <input
                         ref={fileInputRef}
                         type="file"
                         accept="image/*"

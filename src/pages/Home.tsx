@@ -10,7 +10,11 @@ const Home: React.FC = () => {
   const { chats, loading, error } = useChats();
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
 
-  const currentChat = chats.find((c) => c._id === selectedChat);
+  const [page, setPage] = useState(1); // 1‑sahifadan boshlaymiz
+  const PAGE_SIZE = 5;
+
+  const visibleChats = chats.slice(0, page * PAGE_SIZE);
+  const hasMore = chats.length > visibleChats.length;
 
   const { user } = useAuth();
 
@@ -53,6 +57,14 @@ const Home: React.FC = () => {
                       {chat.fullName}
                     </motion.div>
                   ))}
+                  {hasMore && (
+                    <button
+                      onClick={() => setPage((p) => p + 5)}
+                      className="w-full py-2 text-sm font-medium text-center text-primary hover:underline"
+                    >
+                      Load more
+                    </button>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -64,10 +76,7 @@ const Home: React.FC = () => {
             className="flex-1 card-glass border-0 shadow-soft rounded-xl overflow-hidden"
           >
             {selectedChat ? (
-              <Chat
-                chatId={selectedChat}
-                userId={user._id} // <-- bu qiymatni `useAuth` orqali oling
-              />
+              <Chat chatId={selectedChat} userId={user._id} />
             ) : (
               <div className="h-full flex items-center justify-center text-muted-foreground">
                 Select a chat to start messaging
