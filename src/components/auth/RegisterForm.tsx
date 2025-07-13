@@ -7,13 +7,14 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
-  const [name, setName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,7 +22,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{
-    name?: string;
+    fullName?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
@@ -29,19 +30,20 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
 
   const { register } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate()
 
   const validateForm = () => {
     const newErrors: {
-      name?: string;
+      fullName?: string;
       email?: string;
       password?: string;
       confirmPassword?: string;
     } = {};
 
-    if (!name) {
-      newErrors.name = 'Name is required';
-    } else if (name.length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
+    if (!fullName) {
+      newErrors.fullName = 'Name is required';
+    } else if (fullName.length < 2) {
+      newErrors.fullName = 'Name must be at least 2 characters';
     }
 
     if (!email) {
@@ -73,12 +75,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
 
     setIsLoading(true);
     try {
-      const success = await register(name, email, password);
+      const success = await register(fullName, email, password);
       if (success) {
         toast({
           title: 'Account created!',
           description: 'Welcome to ChatApp. Your account has been created successfully.',
         });
+        navigate("/")
       } else {
         toast({
           title: 'Registration failed',
@@ -124,13 +127,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
                   id="name"
                   type="text"
                   placeholder="Enter your full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className={`pl-10 ${errors.name ? 'border-destructive' : ''}`}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className={`pl-10 ${errors.fullName ? 'border-destructive' : ''}`}
                 />
               </div>
-              {errors.name && (
-                <p className="text-sm text-destructive">{errors.name}</p>
+              {errors.fullName && (
+                <p className="text-sm text-destructive">{errors.fullName}</p>
               )}
             </div>
 
